@@ -9,6 +9,7 @@
 `define FLIT_SIZE 26
 `define IN_OUTPORT_CNT  7
 `define LOG_PORTS_CNT 3
+`define ROUTERS_CNT 1000
 /*****************
 * head -> 1bit
 * tail -> 1bit
