@@ -8,14 +8,14 @@
 `include "constants.v"
 module  out_port(output [1:`FLIT_SIZE]flit_out,
                output credit,
-               input [1:`OUTPORT_CNT*`FLIT_SIZE]flit_in,
+               input [1:`IN_OUTPORT_CNT*`FLIT_SIZE]flit_in,
                input [0:VC_SIZE-1]next_router_credit,
                input is_new,
                input [0:9999]TABLE);
  
  parameter VC_SIZE=4;
- wire [1:`FLIT_SIZE] port [1:`OUTPORT_CNT];
- wire [1:`OUTPORT_CNT] comp_dist;
+ wire [1:`FLIT_SIZE] port [1:`IN_OUTPORT_CNT];
+ wire [1:`IN_OUTPORT_CNT] comp_dist;
  
  genvar i;
  generate
