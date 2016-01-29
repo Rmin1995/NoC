@@ -50,7 +50,7 @@ always @(posedge clock or posedge reset)begin
      end
 end
 
-always @(*)
+always @(state or load or next_router_credit or credit_delay_counter)
 begin
     next_state<= S0;
     case(state)

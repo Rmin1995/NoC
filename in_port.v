@@ -13,10 +13,26 @@ module  in_port(output [0:VC_NUM-1] credit,
                 input [1:`FLIT_SIZE] flit_in,
                 input [0:VC_NUM-1] credit_next_router,
                 input clock,
-                input reset
+                input reset,
+                input initialize,
+                input load,
+                input [3:0]port_num
 );
 parameter CREDIT_DELAY = 16;
 parameter VC_NUM = 4;
+
+reg [3:0] input_port_num;
+wire[3:0] n_input_port_num;
+
+always @(posedge clock or posedge reset)
+begin
+    if(reset == 1'b1)
+        input_port_num <= 4'd0;
+    else
+        input_port_num <= n_input_port_num;
+end
+
+assign n_input_port_num = (reset == 1'b0 ? ((initialize == 1'b1 & load == 1'b1) ? port_num : input_port_num) : 4'd0);
 
 wire [1:`FLIT_SIZE] vc_out [0:VC_NUM-1];
 wire [0:VC_NUM-1] vc_new;
@@ -34,7 +50,6 @@ assign num[4]=3'd4;
 assign num[5]=3'd5;
 assign num[6]=3'd6;
 assign num[7]=3'd7;
-
 
 generate
     genvar i;
@@ -86,4 +101,3 @@ endgenerate
 assign flit_out = vc_out[firstPriority];
 
 endmodule
-

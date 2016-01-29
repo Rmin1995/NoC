@@ -5,6 +5,8 @@
 *
 * Description: 
 ***************************************/
+`include "constants.v" 
+
 module  priority_vc(output isNew,
                  output [2:0] firstPriority,
                  input [2:0] num,
