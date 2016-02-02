@@ -11,7 +11,10 @@
 `define LOG_PORTS_CNT 4
 `define OCCUPIEDS_SIZE 5
 `define ROUTERS_CNT 1000
+`define ROUTERS_CNT_BIN 10
 `define TABLE_SIZE 4000
+`define TABLE_ROWS 1000
+`define IN_OUTPORT_CNT_BIN 4
 
 /*****************
 * head -> 1bit

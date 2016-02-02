@@ -7,23 +7,25 @@
 ***************************************/
 `include "constants.v"
 `include "vc.v"
-module  in_port(output [0:VC_NUM-1] credit,
-                output [1:`FLIT_SIZE] flit_out,
-                output is_new,
-                input [1:`FLIT_SIZE] flit_in,
-                input [0:VC_NUM-1] credit_next_router,
-                input clock,
-                input reset,
-                input initialize,
-                input load,
-                input [3:0]port_num
-);
+module  in_port(credit, flit_out, is_new, flit_in, credit_next_router, clock, reset);
+
 parameter CREDIT_DELAY = 16;
 parameter VC_NUM = 4;
 
-reg [3:0] input_port_num;
-wire[3:0] n_input_port_num;
+    output [0:VC_NUM-1] credit;
+    output [1:`FLIT_SIZE*VC_NUM] flit_out;
+    output [0:VC_NUM-1] is_new;
+    input [1:`FLIT_SIZE] flit_in;
+    input [0:VC_NUM-1] credit_next_router;
+    input clock;
+    input reset;
+//    input initialize;
+//    input load;
+//    input [3:0] port_num;
 
+//reg [3:0] input_port_num;
+//wire[3:0] n_input_port_num;
+/*
 always @(posedge clock or posedge reset)
 begin
     if(reset == 1'b1)
@@ -33,13 +35,9 @@ begin
 end
 
 assign n_input_port_num = (reset == 1'b0 ? ((initialize == 1'b1 & load == 1'b1) ? port_num : input_port_num) : 4'd0);
+*/
 
-wire [1:`FLIT_SIZE] vc_out [0:VC_NUM-1];
-wire [0:VC_NUM-1] vc_new;
-wire [0:VC_NUM-1] vc_credit_in;
 wire [0:VC_NUM-1] vc_load;
-
-wire [2:0] firstPriority;
 
 wire [2:0] num[7:0];
 assign num[0]=3'd0;
@@ -62,42 +60,15 @@ generate
     for (i=0; i<VC_NUM; i=i+1)
     begin : GEN_VC
         vc #(.CREDIT_DELAY(CREDIT_DELAY)) V(
-                 .flit_buff(vc_out[i]),
+                 .flit_buff(flit_out[i*`FLIT_SIZE+1:(i+1)*`FLIT_SIZE]),
              .credit(credit[i]),
-             .is_new(vc_new[i]),
+             .is_new(is_new[i]),
              .flit(flit_in),
-             .next_router_credit(vc_credit_in[i]),
+             .next_router_credit(credit_next_router[i]),
              .load(vc_load[i]),
              .clock(clock),
              .reset(reset));
     end
 endgenerate
-
-wire prior[0:VC_NUM];
-wire [2:0] fPrior [0:VC_NUM];
-assign prior[0]=1'b0;
-assign fPrior[0] = 3'b0;
-
-generate
-    for(i=0; i < VC_NUM; i=i+1) begin : GEN_PRIOR
-        priority_vc P(.isNew(prior[i+1]),
-               .firstPriority(fPrior[i+1]),
-               .num(num[i]),
-               .prevPriority(fPrior[i]),
-               .prevIsNew(prior[i]),
-               .vc_isNew(vc_new[i])
-        );
-    end
-endgenerate
-
-assign firstPriority = fPrior[VC_NUM];
-
-generate
-    for(i=0;i<VC_NUM;i=i+1) begin : GEN_VC_CREDITS
-        assign vc_credit_in [i] = ((i == firstPriority) ? credit_next_router[i] : 1'b0);
-    end
-endgenerate
-
-assign flit_out = vc_out[firstPriority];
 
 endmodule
