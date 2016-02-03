@@ -19,23 +19,6 @@ parameter VC_NUM = 4;
     input [0:VC_NUM-1] credit_next_router;
     input clock;
     input reset;
-//    input initialize;
-//    input load;
-//    input [3:0] port_num;
-
-//reg [3:0] input_port_num;
-//wire[3:0] n_input_port_num;
-/*
-always @(posedge clock or posedge reset)
-begin
-    if(reset == 1'b1)
-        input_port_num <= 4'd0;
-    else
-        input_port_num <= n_input_port_num;
-end
-
-assign n_input_port_num = (reset == 1'b0 ? ((initialize == 1'b1 & load == 1'b1) ? port_num : input_port_num) : 4'd0);
-*/
 
 wire [0:VC_NUM-1] vc_load;
 
